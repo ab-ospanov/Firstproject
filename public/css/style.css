@@ -641,6 +641,115 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ================================================
+   HEADER ACTIONS + GOOGLE CALENDAR BUTTON
+   ================================================ */
+.header-actions {
+  display: flex; align-items: center; gap: 8px;
+}
+
+.gcal-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 7px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface2);
+  color: var(--text-sec);
+  font-size: .72rem; font-weight: 600;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  white-space: nowrap;
+}
+.gcal-btn:hover { border-color: #4285f4; color: #4285f4; background: #e8f0fe; }
+.gcal-btn.gcal-connected-btn { border-color: var(--teal); color: var(--teal); background: var(--teal-soft); }
+
+/* ================================================
+   MODAL
+   ================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: fadeInOverlay .2s var(--ease);
+  padding-bottom: var(--safe-bot);
+}
+@keyframes fadeInOverlay { from { opacity:0; } to { opacity:1; } }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--r-2xl) var(--r-2xl) 0 0;
+  width: 100%; max-width: 480px;
+  padding: 20px 20px calc(20px + var(--safe-bot));
+  animation: slideUp .25s var(--ease);
+  max-height: 90dvh; overflow-y: auto;
+}
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.modal-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 1rem; font-weight: 700; color: var(--text);
+}
+.modal-title i { font-size: 1.2rem; }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface2); color: var(--text-muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; transition: all var(--dur);
+}
+.modal-close:hover { background: var(--coral-soft); color: var(--coral); border-color: var(--coral); }
+
+.modal-desc { font-size: .86rem; color: var(--text-sec); margin-bottom: 16px; line-height: 1.55; }
+
+/* Setup steps */
+.gcal-steps {
+  background: var(--bg);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-bottom: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.gcal-step {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: .81rem; color: var(--text-sec); line-height: 1.5;
+}
+.step-num {
+  min-width: 22px; height: 22px;
+  background: var(--brand); color: #fff;
+  border-radius: 50%; font-size: .7rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.gcal-step a { color: var(--brand); text-decoration: none; font-weight: 600; }
+.gcal-step a:hover { text-decoration: underline; }
+.gcal-step code {
+  background: var(--surface2); border-radius: 4px;
+  padding: 1px 6px; font-size: .78rem; font-family: monospace;
+  color: var(--brand);
+}
+
+/* Connected view */
+.gcal-connected {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 20px 0 16px; gap: 8px;
+}
+.gcal-connected p { font-size: .95rem; font-weight: 600; color: var(--text); }
+.gcal-email { font-size: .8rem; color: var(--text-sec); }
+
+.btn-danger {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px; background: transparent; color: var(--coral);
+  border: 1.5px solid var(--coral); border-radius: var(--r-lg);
+  font-size: .9rem; font-weight: 600; cursor: pointer;
+  transition: all var(--dur); margin-top: 4px;
+}
+.btn-danger:hover { background: var(--coral-soft); }
+
+/* ================================================
    TOAST
    ================================================ */
 .toast-container {

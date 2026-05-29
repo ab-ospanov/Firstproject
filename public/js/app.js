@@ -261,6 +261,15 @@ form.addEventListener('submit', async e => {
 
   try {
     await saveTask(data);
+
+    // Add to Google Calendar if connected
+    const savedTask = tasks[tasks.length - 1];
+    if (typeof gcalAddTask === 'function') {
+      gcalAddTask(savedTask).then(link => {
+        if (link) showToast('Добавлено в Google Calendar 📅', 'success');
+      }).catch(() => {});
+    }
+
     showToast('Задача сохранена! Уведомления отправлены.', 'success');
     form.reset();
     assigneeFields.hidden = true;
