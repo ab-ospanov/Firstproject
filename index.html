@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#4f6ef7" />
+  <title>AI Task Manager</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://accounts.google.com/gsi/client" async></script>
+</head>
+<body>
+  <div class="app">
+
+    <!-- ── Header ── -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon"><i class="ti ti-checklist"></i></div>
+        <div class="logo-text">
+          <span class="logo-title">Task Manager</span>
+          <span class="logo-sub">AI-ассистент</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="gcal-btn" id="gcalBtn" title="Google Calendar">
+          <img src="https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_today_2x.png" alt="GCal" width="18" height="18" onerror="this.style.display='none';this.parentNode.querySelector('i').style.display='inline'" />
+          <i class="ti ti-calendar-event" style="display:none"></i>
+          <span id="gcalBtnLabel">Подключить</span>
+        </button>
+        <button class="theme-toggle" id="themeToggle" title="Тема">
+          <i class="ti ti-sun" id="themeIcon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Google Calendar Setup Modal -->
+    <div class="modal-overlay" id="gcalModal" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="ti ti-brand-google" style="color:#4285f4"></i>
+            Google Calendar
+          </div>
+          <button class="modal-close" id="gcalModalClose"><i class="ti ti-x"></i></button>
+        </div>
+
+        <div id="gcalSetupView">
+          <p class="modal-desc">Вставьте ваш Google Client ID — задачи будут автоматически добавляться в ваш календарь.</p>
+
+          <div class="field">
+            <label for="gcalClientId">Google Client ID</label>
+            <input type="text" id="gcalClientId" placeholder="xxxx.apps.googleusercontent.com" />
+          </div>
+
+          <div class="gcal-steps">
+            <div class="gcal-step">
+              <span class="step-num">1</span>
+              <span>Откройте <a href="https://console.cloud.google.com/" target="_blank">console.cloud.google.com</a></span>
+            </div>
+            <div class="gcal-step">
+              <span class="step-num">2</span>
+              <span>Создайте проект → APIs &amp; Services → Enable <b>Google Calendar API</b></span>
+            </div>
+            <div class="gcal-step">
+              <span class="step-num">3</span>
+              <span>Credentials → Create OAuth 2.0 Client ID → Web → добавьте <code>https://ab-ospanov.github.io</code></span>
+            </div>
+            <div class="gcal-step">
+              <span class="step-num">4</span>
+              <span>Скопируйте Client ID и вставьте выше</span>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="gcalConnect" style="margin-top:4px">
+            <i class="ti ti-brand-google"></i>
+            Подключить аккаунт Google
+          </button>
+        </div>
+
+        <div id="gcalConnectedView" hidden>
+          <div class="gcal-connected">
+            <i class="ti ti-circle-check" style="color:var(--teal);font-size:2.5rem"></i>
+            <p>Google Calendar подключён!</p>
+            <span id="gcalUserEmail" class="gcal-email"></span>
+          </div>
+          <button class="btn-danger" id="gcalDisconnect">
+            <i class="ti ti-unlink"></i> Отключить
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <main class="main">
+
+      <!-- ═══════════════════════════════
+           TAB: ЗАДАЧА
+           ═══════════════════════════════ -->
+      <section class="tab-panel active" id="tab-task">
+        <div class="page-head">
+          <h1>Новая задача</h1>
+          <p>Заполните форму — остальное сделает ИИ</p>
+        </div>
+
+        <form id="taskForm" novalidate>
+
+          <!-- Основная информация -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-file-description"></i> Описание</div>
+
+            <div class="field">
+              <label for="title">
+                Наименование задачи <span class="required">*</span>
+              </label>
+              <div class="textarea-voice-wrap">
+                <textarea id="title" name="title" placeholder="Опишите задачу подробно… или нажмите 🎤" rows="3"></textarea>
+                <button type="button" class="voice-btn" id="voiceTask" title="Голосовой ввод">
+                  <i class="ti ti-microphone"></i>
+                </button>
+              </div>
+              <div class="voice-hint" id="voiceTaskHint"></div>
+              <div class="field-error" id="titleError"></div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="date">Дата исполнения <span class="required">*</span></label>
+                <div class="input-icon">
+                  <i class="ti ti-calendar-event"></i>
+                  <input type="date" id="date" name="date" />
+                </div>
+                <div class="field-error" id="dateError"></div>
+              </div>
+              <div class="field">
+                <label for="priority">Приоритет</label>
+                <div class="input-icon">
+                  <i class="ti ti-flag-3"></i>
+                  <select id="priority" name="priority">
+                    <option value="normal">Обычный</option>
+                    <option value="high">Высокий</option>
+                    <option value="critical">Критичный</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Статус -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-toggle-right"></i> Статус задачи</div>
+            <div class="pills" role="group">
+              <label class="pill">
+                <input type="radio" name="status" value="new" checked />
+                <span class="pill-label status-new"><i class="ti ti-circle-dot"></i>Новая</span>
+              </label>
+              <label class="pill">
+                <input type="radio" name="status" value="prog" />
+                <span class="pill-label status-prog"><i class="ti ti-loader"></i>В работе</span>
+              </label>
+              <label class="pill">
+                <input type="radio" name="status" value="done" />
+                <span class="pill-label status-done"><i class="ti ti-circle-check"></i>Выполнена</span>
+              </label>
+              <label class="pill">
+                <input type="radio" name="status" value="hold" />
+                <span class="pill-label status-hold"><i class="ti ti-pause-circle"></i>Отложена</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Контакты -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-mail"></i> Уведомления</div>
+            <div class="field">
+              <label for="myEmail">Ваш Email <span class="required">*</span></label>
+              <div class="input-icon">
+                <i class="ti ti-at"></i>
+                <input type="email" id="myEmail" name="myEmail" placeholder="your@email.com" />
+              </div>
+              <div class="field-error" id="myEmailError"></div>
+            </div>
+          </div>
+
+          <!-- Исполнитель -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-users"></i> Исполнитель</div>
+
+            <label class="toggle-row" for="assigneeToggle">
+              <div class="toggle-info">
+                <strong>Назначить исполнителя?</strong>
+                <span>Исполнитель получит уведомление</span>
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="assigneeToggle" />
+                <span class="toggle-track"></span>
+              </div>
+            </label>
+
+            <div class="assignee-section" id="assigneeFields" hidden>
+              <div class="assignee-head">
+                <i class="ti ti-user-plus"></i> Данные исполнителя
+              </div>
+              <div class="field">
+                <label for="assignee">ФИО <span class="required">*</span></label>
+                <div class="input-icon">
+                  <i class="ti ti-user"></i>
+                  <input type="text" id="assignee" name="assignee" placeholder="Иванов Иван Иванович" />
+                </div>
+                <div class="field-error" id="assigneeError"></div>
+              </div>
+              <div class="field">
+                <label for="assigneeEmail">Email <span class="required">*</span></label>
+                <div class="input-icon">
+                  <i class="ti ti-at"></i>
+                  <input type="email" id="assigneeEmail" name="assigneeEmail" placeholder="executor@email.com" />
+                </div>
+                <div class="field-error" id="assigneeEmailError"></div>
+              </div>
+              <div class="field">
+                <label for="assigneePhone">Телефон</label>
+                <div class="input-icon">
+                  <i class="ti ti-phone"></i>
+                  <input type="tel" id="assigneePhone" name="assigneePhone" placeholder="+7 (999) 000-00-00" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="saveBtn">
+            <i class="ti ti-device-floppy"></i>
+            Сохранить задачу
+          </button>
+        </form>
+      </section>
+
+      <!-- ═══════════════════════════════
+           TAB: СПИСОК
+           ═══════════════════════════════ -->
+      <section class="tab-panel" id="tab-list">
+        <div class="page-head">
+          <h1>Мои задачи</h1>
+          <p id="tasksSubtitle">Загрузка…</p>
+        </div>
+
+        <div class="list-top">
+          <div class="filter-scroll" role="group">
+            <button class="filter-chip active" data-filter="all">Все</button>
+            <button class="filter-chip" data-filter="new"><span class="chip-dot" style="color:var(--s-new)"></span>Новые</button>
+            <button class="filter-chip" data-filter="prog"><span class="chip-dot" style="color:var(--s-prog)"></span>В работе</button>
+            <button class="filter-chip" data-filter="done"><span class="chip-dot" style="color:var(--s-done)"></span>Готово</button>
+            <button class="filter-chip" data-filter="hold"><span class="chip-dot" style="color:var(--s-hold)"></span>Отложено</button>
+          </div>
+        </div>
+
+        <div id="taskList" class="task-list"></div>
+      </section>
+
+      <!-- ═══════════════════════════════
+           TAB: АССИСТЕНТ
+           ═══════════════════════════════ -->
+      <section class="tab-panel" id="tab-chat">
+        <div class="chat-wrap">
+          <div class="chat-messages" id="chatMessages">
+            <!-- Greeting card -->
+            <div class="ai-greeting">
+              <div class="ai-greeting-head">
+                <div class="ai-avatar-lg"><i class="ti ti-robot"></i></div>
+                <div>
+                  <h3>Привет! Я ваш AI-помощник</h3>
+                  <p>На базе Claude — Anthropic</p>
+                </div>
+              </div>
+              <ul>
+                <li>Создам задачу из вашего описания</li>
+                <li>Расскажу о текущих дедлайнах</li>
+                <li>Помогу расставить приоритеты</li>
+              </ul>
+              <div class="hint">
+                Попробуйте: «Согласовать договор с Ивановым до 15 июня»
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-wrap">
+            <div class="chat-input-box">
+              <textarea id="chatInput" class="chat-input" placeholder="Напишите или скажите задачу…" rows="1"></textarea>
+              <button type="button" class="voice-chat-btn" id="voiceChat" title="Голосовой ввод">
+                <i class="ti ti-microphone"></i>
+              </button>
+              <button id="chatSend" class="chat-send-btn" title="Отправить">
+                <i class="ti ti-send-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Bottom Navigation ── -->
+    <nav class="bottom-nav">
+      <button class="nav-tab active" data-tab="task">
+        <i class="ti ti-plus-circle"></i>
+        Задача
+      </button>
+      <button class="nav-tab" data-tab="list">
+        <i class="ti ti-layout-list"></i>
+        Список
+        <span class="nav-badge" id="overdueBadge"></span>
+      </button>
+      <button class="nav-tab" data-tab="chat">
+        <i class="ti ti-message-circle-bolt"></i>
+        Ассистент
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- Task card template -->
+  <template id="taskCardTpl">
+    <div class="task-card" data-id="" data-status="">
+      <div class="task-card-top">
+        <span class="badge task-status-badge"></span>
+        <span class="badge task-priority-badge"></span>
+      </div>
+      <div class="task-title"></div>
+      <div class="task-meta">
+        <span class="task-meta-item task-date-wrap">
+          <i class="ti ti-calendar"></i>
+          <span class="task-date-val"></span>
+        </span>
+        <span class="task-meta-item task-assignee-wrap" hidden>
+          <i class="ti ti-user"></i>
+          <span class="task-assignee-val"></span>
+        </span>
+      </div>
+      <div class="task-actions">
+        <select class="status-select"></select>
+        <button class="btn-icon cal-btn" title="Скачать .ics"><i class="ti ti-calendar-plus"></i></button>
+        <button class="btn-icon del-btn" title="Удалить"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+  </template>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="js/gcal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
