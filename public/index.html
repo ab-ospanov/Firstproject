@@ -2,65 +2,66 @@
 <html lang="ru" data-theme="auto">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#4f6ef7" />
   <title>AI Task Manager</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <div class="app">
-    <!-- Header -->
+
+    <!-- ── Header ── -->
     <header class="header">
-      <div class="header-inner">
-        <div class="logo">
-          <i class="ti ti-checklist"></i>
-          <span>AI Task Manager</span>
+      <div class="logo">
+        <div class="logo-icon"><i class="ti ti-checklist"></i></div>
+        <div class="logo-text">
+          <span class="logo-title">Task Manager</span>
+          <span class="logo-sub">AI-ассистент</span>
         </div>
-        <button class="theme-toggle" id="themeToggle" title="Переключить тему">
-          <i class="ti ti-sun" id="themeIcon"></i>
-        </button>
       </div>
+      <button class="theme-toggle" id="themeToggle" title="Тема">
+        <i class="ti ti-sun" id="themeIcon"></i>
+      </button>
     </header>
 
-    <!-- Tabs -->
-    <nav class="tabs">
-      <button class="tab active" data-tab="task">
-        <i class="ti ti-plus"></i>
-        <span>Задача</span>
-      </button>
-      <button class="tab" data-tab="list">
-        <i class="ti ti-list"></i>
-        <span>Список</span>
-      </button>
-      <button class="tab" data-tab="chat">
-        <i class="ti ti-robot"></i>
-        <span>Ассистент</span>
-      </button>
-    </nav>
-
+    <!-- ── Main Content ── -->
     <main class="main">
-      <!-- === TAB: TASK FORM === -->
-      <section class="tab-panel active" id="tab-task">
-        <div class="card">
-          <div class="card-header">
-            <i class="ti ti-pencil"></i>
-            <h2>Новая задача</h2>
-          </div>
 
-          <form id="taskForm" novalidate>
-            <!-- Title -->
+      <!-- ═══════════════════════════════
+           TAB: ЗАДАЧА
+           ═══════════════════════════════ -->
+      <section class="tab-panel active" id="tab-task">
+        <div class="page-head">
+          <h1>Новая задача</h1>
+          <p>Заполните форму — остальное сделает ИИ</p>
+        </div>
+
+        <form id="taskForm" novalidate>
+
+          <!-- Основная информация -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-file-description"></i> Описание</div>
+
             <div class="field">
-              <label for="title">Наименование задачи <span class="required">*</span></label>
-              <textarea id="title" name="title" rows="3" placeholder="Опишите задачу подробно..."></textarea>
+              <label for="title">
+                Наименование задачи <span class="required">*</span>
+              </label>
+              <div class="textarea-voice-wrap">
+                <textarea id="title" name="title" placeholder="Опишите задачу подробно… или нажмите 🎤" rows="3"></textarea>
+                <button type="button" class="voice-btn" id="voiceTask" title="Голосовой ввод">
+                  <i class="ti ti-microphone"></i>
+                </button>
+              </div>
+              <div class="voice-hint" id="voiceTaskHint"></div>
               <div class="field-error" id="titleError"></div>
             </div>
 
-            <!-- Date + Priority row -->
             <div class="field-row">
               <div class="field">
                 <label for="date">Дата исполнения <span class="required">*</span></label>
                 <div class="input-icon">
-                  <i class="ti ti-calendar"></i>
+                  <i class="ti ti-calendar-event"></i>
                   <input type="date" id="date" name="date" />
                 </div>
                 <div class="field-error" id="dateError"></div>
@@ -68,7 +69,7 @@
               <div class="field">
                 <label for="priority">Приоритет</label>
                 <div class="input-icon">
-                  <i class="ti ti-flag"></i>
+                  <i class="ti ti-flag-3"></i>
                   <select id="priority" name="priority">
                     <option value="normal">Обычный</option>
                     <option value="high">Высокий</option>
@@ -77,59 +78,65 @@
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Status pills -->
-            <div class="field">
-              <label>Статус <span class="required">*</span></label>
-              <div class="pills" role="group">
-                <label class="pill">
-                  <input type="radio" name="status" value="new" checked />
-                  <span class="pill-label status-new">Новая</span>
-                </label>
-                <label class="pill">
-                  <input type="radio" name="status" value="prog" />
-                  <span class="pill-label status-prog">В работе</span>
-                </label>
-                <label class="pill">
-                  <input type="radio" name="status" value="done" />
-                  <span class="pill-label status-done">Выполнена</span>
-                </label>
-                <label class="pill">
-                  <input type="radio" name="status" value="hold" />
-                  <span class="pill-label status-hold">Отложена</span>
-                </label>
-              </div>
+          <!-- Статус -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-toggle-right"></i> Статус задачи</div>
+            <div class="pills" role="group">
+              <label class="pill">
+                <input type="radio" name="status" value="new" checked />
+                <span class="pill-label status-new"><i class="ti ti-circle-dot"></i>Новая</span>
+              </label>
+              <label class="pill">
+                <input type="radio" name="status" value="prog" />
+                <span class="pill-label status-prog"><i class="ti ti-loader"></i>В работе</span>
+              </label>
+              <label class="pill">
+                <input type="radio" name="status" value="done" />
+                <span class="pill-label status-done"><i class="ti ti-circle-check"></i>Выполнена</span>
+              </label>
+              <label class="pill">
+                <input type="radio" name="status" value="hold" />
+                <span class="pill-label status-hold"><i class="ti ti-pause-circle"></i>Отложена</span>
+              </label>
             </div>
+          </div>
 
-            <!-- Owner email -->
+          <!-- Контакты -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-mail"></i> Уведомления</div>
             <div class="field">
               <label for="myEmail">Ваш Email <span class="required">*</span></label>
               <div class="input-icon">
-                <i class="ti ti-mail"></i>
+                <i class="ti ti-at"></i>
                 <input type="email" id="myEmail" name="myEmail" placeholder="your@email.com" />
               </div>
               <div class="field-error" id="myEmailError"></div>
             </div>
+          </div>
 
-            <!-- Assignee toggle -->
-            <div class="field assignee-toggle-wrap">
-              <label class="toggle-label">
-                <div class="toggle-switch">
-                  <input type="checkbox" id="assigneeToggle" />
-                  <span class="toggle-track"></span>
-                </div>
-                <span>Назначить исполнителя?</span>
-              </label>
-            </div>
+          <!-- Исполнитель -->
+          <div class="card">
+            <div class="section-label"><i class="ti ti-users"></i> Исполнитель</div>
 
-            <!-- Assignee fields -->
-            <div class="assignee-fields" id="assigneeFields" hidden>
-              <div class="assignee-divider">
-                <i class="ti ti-user-plus"></i>
-                <span>Данные исполнителя</span>
+            <label class="toggle-row" for="assigneeToggle">
+              <div class="toggle-info">
+                <strong>Назначить исполнителя?</strong>
+                <span>Исполнитель получит уведомление</span>
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="assigneeToggle" />
+                <span class="toggle-track"></span>
+              </div>
+            </label>
+
+            <div class="assignee-section" id="assigneeFields" hidden>
+              <div class="assignee-head">
+                <i class="ti ti-user-plus"></i> Данные исполнителя
               </div>
               <div class="field">
-                <label for="assignee">ФИО исполнителя <span class="required">*</span></label>
+                <label for="assignee">ФИО <span class="required">*</span></label>
                 <div class="input-icon">
                   <i class="ti ti-user"></i>
                   <input type="text" id="assignee" name="assignee" placeholder="Иванов Иван Иванович" />
@@ -137,110 +144,140 @@
                 <div class="field-error" id="assigneeError"></div>
               </div>
               <div class="field">
-                <label for="assigneeEmail">Email исполнителя <span class="required">*</span></label>
+                <label for="assigneeEmail">Email <span class="required">*</span></label>
                 <div class="input-icon">
-                  <i class="ti ti-mail"></i>
+                  <i class="ti ti-at"></i>
                   <input type="email" id="assigneeEmail" name="assigneeEmail" placeholder="executor@email.com" />
                 </div>
                 <div class="field-error" id="assigneeEmailError"></div>
               </div>
               <div class="field">
-                <label for="assigneePhone">Контактный телефон</label>
+                <label for="assigneePhone">Телефон</label>
                 <div class="input-icon">
                   <i class="ti ti-phone"></i>
                   <input type="tel" id="assigneePhone" name="assigneePhone" placeholder="+7 (999) 000-00-00" />
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Submit -->
-            <button type="submit" class="btn-primary" id="saveBtn">
-              <i class="ti ti-device-floppy"></i>
-              Сохранить задачу
-            </button>
-          </form>
-        </div>
+          <button type="submit" class="btn-primary" id="saveBtn">
+            <i class="ti ti-device-floppy"></i>
+            Сохранить задачу
+          </button>
+        </form>
       </section>
 
-      <!-- === TAB: TASK LIST === -->
+      <!-- ═══════════════════════════════
+           TAB: СПИСОК
+           ═══════════════════════════════ -->
       <section class="tab-panel" id="tab-list">
-        <div class="list-header">
-          <div class="filter-pills" role="group">
-            <button class="filter-pill active" data-filter="all">Все</button>
-            <button class="filter-pill" data-filter="new">Новые</button>
-            <button class="filter-pill" data-filter="prog">В работе</button>
-            <button class="filter-pill" data-filter="done">Выполнены</button>
-            <button class="filter-pill" data-filter="hold">Отложены</button>
+        <div class="page-head">
+          <h1>Мои задачи</h1>
+          <p id="tasksSubtitle">Загрузка…</p>
+        </div>
+
+        <div class="list-top">
+          <div class="filter-scroll" role="group">
+            <button class="filter-chip active" data-filter="all">Все</button>
+            <button class="filter-chip" data-filter="new"><span class="chip-dot" style="color:var(--s-new)"></span>Новые</button>
+            <button class="filter-chip" data-filter="prog"><span class="chip-dot" style="color:var(--s-prog)"></span>В работе</button>
+            <button class="filter-chip" data-filter="done"><span class="chip-dot" style="color:var(--s-done)"></span>Готово</button>
+            <button class="filter-chip" data-filter="hold"><span class="chip-dot" style="color:var(--s-hold)"></span>Отложено</button>
           </div>
         </div>
 
-        <div id="taskList" class="task-list">
-          <div class="empty-state">
-            <i class="ti ti-clipboard-x"></i>
-            <p>Задач пока нет.<br>Создайте первую задачу!</p>
-          </div>
-        </div>
+        <div id="taskList" class="task-list"></div>
       </section>
 
-      <!-- === TAB: AI CHAT === -->
+      <!-- ═══════════════════════════════
+           TAB: АССИСТЕНТ
+           ═══════════════════════════════ -->
       <section class="tab-panel" id="tab-chat">
         <div class="chat-wrap">
           <div class="chat-messages" id="chatMessages">
-            <div class="chat-message assistant">
-              <div class="chat-avatar"><i class="ti ti-robot"></i></div>
-              <div class="chat-bubble">
-                <p>Привет! Я ваш AI-ассистент. Могу помочь:</p>
-                <ul>
-                  <li>Создать задачу из текста — просто опишите её</li>
-                  <li>Рассказать о текущих задачах и дедлайнах</li>
-                  <li>Дать советы по управлению задачами</li>
-                </ul>
-                <p>Попробуйте: <em>«Согласовать договор с Ивановым до 15 июня»</em></p>
+            <!-- Greeting card -->
+            <div class="ai-greeting">
+              <div class="ai-greeting-head">
+                <div class="ai-avatar-lg"><i class="ti ti-robot"></i></div>
+                <div>
+                  <h3>Привет! Я ваш AI-помощник</h3>
+                  <p>На базе Claude — Anthropic</p>
+                </div>
+              </div>
+              <ul>
+                <li>Создам задачу из вашего описания</li>
+                <li>Расскажу о текущих дедлайнах</li>
+                <li>Помогу расставить приоритеты</li>
+              </ul>
+              <div class="hint">
+                Попробуйте: «Согласовать договор с Ивановым до 15 июня»
               </div>
             </div>
           </div>
 
           <div class="chat-input-wrap">
-            <div class="chat-input-inner">
-              <textarea id="chatInput" class="chat-input" placeholder="Напишите сообщение..." rows="1"></textarea>
+            <div class="chat-input-box">
+              <textarea id="chatInput" class="chat-input" placeholder="Напишите или скажите задачу…" rows="1"></textarea>
+              <button type="button" class="voice-chat-btn" id="voiceChat" title="Голосовой ввод">
+                <i class="ti ti-microphone"></i>
+              </button>
               <button id="chatSend" class="chat-send-btn" title="Отправить">
-                <i class="ti ti-send"></i>
+                <i class="ti ti-send-2"></i>
               </button>
             </div>
           </div>
         </div>
       </section>
+
     </main>
+
+    <!-- ── Bottom Navigation ── -->
+    <nav class="bottom-nav">
+      <button class="nav-tab active" data-tab="task">
+        <i class="ti ti-plus-circle"></i>
+        Задача
+      </button>
+      <button class="nav-tab" data-tab="list">
+        <i class="ti ti-layout-list"></i>
+        Список
+        <span class="nav-badge" id="overdueBadge"></span>
+      </button>
+      <button class="nav-tab" data-tab="chat">
+        <i class="ti ti-message-circle-bolt"></i>
+        Ассистент
+      </button>
+    </nav>
+
   </div>
 
   <!-- Task card template -->
   <template id="taskCardTpl">
-    <div class="task-card" data-id="">
-      <div class="task-card-header">
-        <span class="task-status-badge"></span>
-        <span class="task-priority-badge"></span>
+    <div class="task-card" data-id="" data-status="">
+      <div class="task-card-top">
+        <span class="badge task-status-badge"></span>
+        <span class="badge task-priority-badge"></span>
       </div>
-      <div class="task-card-title"></div>
-      <div class="task-card-meta">
-        <span class="task-date"><i class="ti ti-calendar"></i> <span class="task-date-val"></span></span>
-        <span class="task-assignee" hidden><i class="ti ti-user"></i> <span class="task-assignee-val"></span></span>
+      <div class="task-title"></div>
+      <div class="task-meta">
+        <span class="task-meta-item task-date-wrap">
+          <i class="ti ti-calendar"></i>
+          <span class="task-date-val"></span>
+        </span>
+        <span class="task-meta-item task-assignee-wrap" hidden>
+          <i class="ti ti-user"></i>
+          <span class="task-assignee-val"></span>
+        </span>
       </div>
-      <div class="task-card-actions">
-        <select class="status-select">
-          <option value="new">Новая</option>
-          <option value="prog">В работе</option>
-          <option value="done">Выполнена</option>
-          <option value="hold">Отложена</option>
-        </select>
+      <div class="task-actions">
+        <select class="status-select"></select>
         <button class="btn-icon cal-btn" title="Скачать .ics"><i class="ti ti-calendar-plus"></i></button>
         <button class="btn-icon del-btn" title="Удалить"><i class="ti ti-trash"></i></button>
       </div>
     </div>
   </template>
 
-  <!-- Toast notification -->
   <div class="toast-container" id="toastContainer"></div>
-
   <script src="/js/app.js"></script>
 </body>
 </html>
