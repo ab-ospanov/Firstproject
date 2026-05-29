@@ -58,17 +58,8 @@
   --safe-bot:  env(safe-area-inset-bottom, 0px);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --dm: 1; }
-}
-[data-theme="dark"] { --dm: 1; }
-
-:root[style*="--dm"] ,
-:root:has([data-theme="dark"]) { /* fallback */ }
-
-[data-theme="dark"],
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+/* Dark mode variables */
+[data-theme="dark"] {
   --bg:         #0e1022;
   --surface:    #171a30;
   --surface2:   #1f2340;
@@ -84,7 +75,27 @@
   --s-hold-bg:  #2a1018;
   --sh-card:    0 2px 8px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.04);
   --sh-float:   0 8px 28px rgba(0,0,0,.45);
-}}
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:         #0e1022;
+    --surface:    #171a30;
+    --surface2:   #1f2340;
+    --border:     #2a2f50;
+    --text:       #e8eaf5;
+    --text-sec:   #9aa0c4;
+    --text-muted: #5a6080;
+    --brand-soft: #1a1f40;
+    --teal-soft:  #0d2828;
+    --s-new-bg:   #1a1f3e;
+    --s-prog-bg:  #2a2010;
+    --s-done-bg:  #0d2620;
+    --s-hold-bg:  #2a1018;
+    --sh-card:    0 2px 8px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.04);
+    --sh-float:   0 8px 28px rgba(0,0,0,.45);
+  }
+}
 
 /* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
